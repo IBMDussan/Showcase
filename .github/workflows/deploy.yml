@@ -1,0 +1,64 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npx vite build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        # Note (R5): If GitHub Pages is not enabled in the org,
+        # the build artifact is still uploaded and can be downloaded
+        # from the Actions run. Hash router ensures no 404s.
+        continue-on-error: true
+
+      - name: Report deployment status
+        if: always()
+        run: |
+          if [ "${{ steps.deployment.outcome }}" == "success" ]; then
+            echo "✓ Deployed to ${{ steps.deployment.outputs.page_url }}"
+          else
+            echo "⚠ Pages deployment skipped or failed (R5). Artifact available for download."
+          fi

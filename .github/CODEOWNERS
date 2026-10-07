@@ -1,0 +1,31 @@
+# CODEOWNERS — BackOffice CashApps Showcase
+# Replace @lead and @org/repo with actual values
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global fallback — LEAD approves everything by default
+*                                    @lead
+
+# Shared infrastructure — only LEAD can approve
+src/core/                            @lead
+src/app/                             @lead
+src/main.tsx                         @lead
+vite.config.ts                       @lead
+tsconfig.json                        @lead
+package.json                         @lead
+eslint.config.ts                     @lead
+prettier.config.ts                   @lead
+vitest.config.ts                     @lead
+tailwind.config.ts                   @lead
+scripts/                             @lead
+.github/                             @lead
+
+# Sections — each owner approves their own section
+# (Replace TBD with actual GitHub handles)
+src/sections/objetivos/              @lead  # TBD
+src/sections/indicadores/            @lead  # TBD
+src/sections/respaldo/               @lead  # TBD
+src/sections/mm-performance/         @lead  # TBD
+src/sections/cargue-horas/           @lead  # TBD
+src/sections/desempeno/              @lead  # TBD
+src/sections/retrospectiva/          @lead  # TBD
+src/sections/iniciativas/            @lead  # TBD

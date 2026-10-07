@@ -1,0 +1,19 @@
+﻿# .bobignore — Files and directories Bob should not read or modify
+# Format: gitignore-style patterns
+
+# Build output
+dist/
+dist-ssr/
+
+# Dependencies
+node_modules/
+
+# Test coverage
+coverage/
+
+# Lock files (Bob should not modify these)
+package-lock.json
+
+# Large data files that aren't config
+*.log
+npm-debug.log*

@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'section/**', 'feat/**', 'fix/**']
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Typecheck · Lint · Test · Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npx eslint .
+
+      - name: Test (validate + unit)
+        run: npx vitest run
+
+      - name: Build
+        run: npx vite build
+
+  scope-check:
+    name: Scope check (section branches)
+    runs-on: ubuntu-latest
+    if: startsWith(github.head_ref || github.ref_name, 'section/')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch main
+        run: git fetch origin main
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check scope
+        run: node scripts/check-scope.mjs
