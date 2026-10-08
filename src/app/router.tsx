@@ -5,6 +5,10 @@ import { Shell } from './shell'
 
 const DevKit = lazy(() => import('../dev/kit/index'))
 
+// Route-level page transitions are handled inside Hub and Shell
+// via Motion AnimatePresence on their own content areas.
+// The router itself stays minimal — each route component owns its animation.
+
 export const router = createHashRouter([
   {
     path: '/',
